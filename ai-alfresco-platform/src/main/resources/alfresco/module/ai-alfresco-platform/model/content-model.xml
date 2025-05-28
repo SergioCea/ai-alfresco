@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model name="ai:contentModel"
+    xmlns="http://www.alfresco.org/model/dictionary/1.0">
+
+    <!-- Optional meta-data about the model -->
+    <description>AI Alfresco Module</description>
+    <author>Sergio</author>
+    <version>1.0</version>
+
+    <imports>
+        <!-- Import Alfresco Dictionary Definitions -->
+        <import uri="http://www.alfresco.org/model/dictionary/1.0" prefix="d"/>
+        <!-- Import Alfresco Content Domain Model Definitions -->
+        <import uri="http://www.alfresco.org/model/content/1.0" prefix="cm"/>
+        <!-- Import Alfresco System Model Definitions -->
+        <import uri="http://www.alfresco.org/model/system/1.0" prefix="sys"/>
+    </imports>
+
+    <!-- Custom namespace for the ACME company -->
+    <namespaces>
+        <namespace uri="http://www.ai-alfresco.org/model/content/1.0" prefix="ai"/>
+    </namespaces>
+
+    <aspects>
+        <!-- A document can have security classification applied and
+             faceted search is specifically enabled for best performance and we change
+             default index config to not tokenize the value. -->
+        <aspect name="ai:tickets">
+            <title>Ticket Metadata</title>
+            <properties>
+                <property name="ai:ticketDate">
+                    <type>d:date</type>
+                </property>
+                <property name="ai:ticketTax">
+                    <type>d:text</type>
+                    <default></default>
+                </property>
+                <property name="ai:ticketTotal">
+                    <type>d:text</type>
+                    <default></default>
+                </property>
+                <property name="ai:ticketCountry">
+                    <type>d:text</type>
+                    <default></default>
+                </property>
+            </properties>
+        </aspect>
+
+        <aspect name="ai:invoices">
+            <title>Invoice Metadata</title>
+            <properties>
+                <property name="ai:invoiceDate">
+                    <type>d:date</type>
+                </property>
+                <property name="ai:invoiceNumber">
+                    <type>d:text</type>
+                    <default></default>
+                </property>
+                <property name="ai:invoiceTotal">
+                    <type>d:text</type>
+                    <default></default>
+                </property>
+                <property name="ai:invoiceTax">
+                    <type>d:text</type>
+                    <default></default>
+                </property>
+            </properties>
+        </aspect>
+    </aspects>
+</model>

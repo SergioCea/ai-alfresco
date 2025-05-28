@@ -1,0 +1,289 @@
+<!-- Share configuration related to this particular Share module extension, such as:
+     - Doclib action config
+     - Form config
+     - Aspect and Type config
+     - Advanced Search
+
+    Note. Any configuration related to the whole Share.war webapp
+           (i.e. not specific to this share extension) should be
+            placed in the environment specific config file:
+             alfresco/tomcat/shared/classes/alfresco/web-extension/share-config-custom.xml
+     -->
+<alfresco-config>
+    <config evaluator="string-compare" condition="DocumentLibrary">
+        <aspects>
+            <!-- Aspects that a user can see -->
+            <visible>
+                <!-- custom aspects -->
+                <aspect name="ai:tickets" />
+                <aspect name="ai:invoices" />
+            </visible>
+            <addable> <!-- defaults to visible config -->
+            </addable>
+            <removeable> <!-- defaults to visible config -->
+            </removeable>
+        </aspects>
+    </config>
+
+    <!-- Ticket AI - Document Library Configuration -->
+	<config evaluator="aspect" condition="ai:tickets">
+		<forms>
+			<form>
+				<field-visibility>
+                    <show id="ai:ticketDate" for-mode="view"/>
+                    <show id="ai:ticketTax" for-mode="view"/>
+                    <show id="ai:ticketTotal" for-mode="view"/>
+                    <show id="ai:ticketCountry" for-mode="view"/>				
+				</field-visibility>
+				<appearance>
+					<set id="documentos" appearance="bordered-panel" label="Ticket Metadata" />
+					
+                    <field id="ai:ticketDate" set="documentos">
+                        <control template="/org/alfresco/components/form/controls/date.ftl">
+                            <control-param name="showTime">false</control-param>
+							<control-param name="submitTime">false</control-param>
+                        </control>
+                    </field>
+               		<field id="ai:ticketTax" set="documentos">
+                        <control template="/org/alfresco/components/form/controls/textfield.ftl"></control>
+                    </field>
+                    <field id="ai:ticketTotal" set="documentos">
+                        <control template="/org/alfresco/components/form/controls/textfield.ftl"></control>
+                    </field>
+                    <field id="ai:ticketCountry" set="documentos">
+                        <control template="/org/alfresco/components/form/controls/textfield.ftl"></control>
+                    </field>
+				</appearance>
+			</form>
+		</forms>
+	</config>
+   	
+	<!-- Ticket AI - Advanced Search Configuration -->	
+	<config evaluator="string-compare" condition="AdvancedSearch">
+		<advanced-search>
+			<forms>
+				<form label="Ticket Metadata" description="Busqueda metadatos Ticket" id="customsearchtc">cm:content</form>
+			</forms>
+		</advanced-search>
+	</config>
+	<config evaluator="model-type" condition="cm:content">
+		<forms>
+			<form id="customsearchtc">
+				<field-visibility>	
+					<show id="ai:ticketDate" force="true"/>
+					<show id="ai:ticketTax" force="true"/>
+                    <show id="ai:ticketTotal" force="true"/>
+                    <show id="ai:ticketCountry" force="true"/>
+
+				</field-visibility>
+				<appearance>
+				    <set id="documentos" appearance="bordered-panel" label="Ticket Metadata" />
+
+                    <field id="ai:ticketDate" set="documentos">
+                        <control template="/org/alfresco/components/form/controls/date.ftl">
+                            <control-param name="showTime">false</control-param>
+							<control-param name="submitTime">false</control-param>
+                        </control>
+                    </field>
+					<field id="ai:ticketTax" set="documentos">
+                        <control template="/org/alfresco/components/form/controls/textfield.ftl"></control>
+                    </field>
+                    <field id="ai:ticketTotal" set="documentos">
+                        <control template="/org/alfresco/components/form/controls/textfield.ftl"></control>
+                    </field>
+                    <field id="ai:ticketCountry" set="documentos">
+                        <control template="/org/alfresco/components/form/controls/textfield.ftl"></control>
+                    </field>
+				</appearance>
+			</form>
+		</forms>
+	</config>
+
+    <!-- Invoice AI - Document Library Configuration -->
+	<config evaluator="aspect" condition="ai:invoices">
+		<forms>
+			<form>
+				<field-visibility>
+                    <show id="ai:invoiceDate" for-mode="view"/>
+                    <show id="ai:invoiceNumber" for-mode="view"/>
+                    <show id="ai:invoiceTotal" for-mode="view"/>
+                    <show id="ai:invoiceTax" for-mode="view"/>				
+				</field-visibility>
+				<appearance>
+					<set id="documentos" appearance="bordered-panel" label="Invoice Metadata" />
+					
+               		<field id="ai:invoiceDate" set="documentos">
+                        <control template="/org/alfresco/components/form/controls/date.ftl">
+                            <control-param name="showTime">false</control-param>
+							<control-param name="submitTime">false</control-param>
+                        </control>
+                    </field>
+                    <field id="ai:invoiceNumber" set="documentos">
+                        <control template="/org/alfresco/components/form/controls/textfield.ftl"></control>
+                    </field>
+                    <field id="ai:invoiceTotal" set="documentos">
+                        <control template="/org/alfresco/components/form/controls/textfield.ftl"></control>
+                    </field>
+                    <field id="ai:invoiceTax" set="documentos">
+                        <control template="/org/alfresco/components/form/controls/textfield.ftl"></control>
+                    </field>
+				</appearance>
+			</form>
+		</forms>
+	</config>
+   	
+	<!-- Invoice AI - Advanced Search Configuration -->	
+	<config evaluator="string-compare" condition="AdvancedSearch">
+		<advanced-search>
+			<forms>
+				<form label="Invoice Metadata" description="Busqueda metadatos Invoice" id="customsearchinvoice">cm:content</form>
+			</forms>
+		</advanced-search>
+	</config>
+	<config evaluator="model-type" condition="cm:content">
+		<forms>
+			<form id="customsearchinvoice">
+				<field-visibility>	
+					<show id="ai:invoiceDate" force="true"/>
+                    <show id="ai:invoiceNumber" force="true"/>
+                    <show id="ai:invoiceTotal" force="true"/>
+                    <show id="ai:invoiceTax" force="true"/>
+
+				</field-visibility>
+				<appearance>
+				    <set id="documentos" appearance="bordered-panel" label="Invoice Metadata" />
+
+					<field id="ai:invoiceDate" set="documentos">
+                        <control template="/org/alfresco/components/form/controls/datetime.ftl"></control>
+                    </field>
+                    <field id="ai:invoiceNumber" set="documentos">
+                        <control template="/org/alfresco/components/form/controls/textfield.ftl"></control>
+                    </field>
+                    <field id="ai:invoiceTotal" set="documentos">
+                        <control template="/org/alfresco/components/form/controls/textfield.ftl"></control>
+                    </field>
+                    <field id="ai:invoiceTax" set="documentos">
+                        <control template="/org/alfresco/components/form/controls/textfield.ftl"></control>
+                    </field>
+				</appearance>
+			</form>
+		</forms>
+	</config>
+
+    <config evaluator="string-compare" condition="DocLibActions">
+        <actions>
+            <action id="es_artisca_translate" type="javascript" label="translate.action.label" description="translate.action.description" icon="google-translate-icon">
+                <param name="function">onActionFormDialog</param>
+                <param name="itemKind">action</param>
+                <param name="itemId">translate-action</param>
+                <param name="mode">create</param>
+                <param name="destination">{node.nodeRef}</param>
+                <param name="successMessage">translate.action.msg.success</param>
+                <param name="failureMessage">translate.action.msg.failure</param>
+                <evaluator>mimeTypeEvaluator</evaluator>
+            </action>
+            <action id="es_artisca_metadata_extract" type="javascript" label="metadata_extract.action.label" description="metadata_extract.action.description" icon="extract-metadata-icon">
+                <param name="function">onActionFormDialog</param>
+                <param name="itemKind">action</param>
+                <param name="itemId">metadata_extract-action</param>
+                <param name="mode">create</param>
+                <param name="destination">{node.nodeRef}</param>
+                <param name="successMessage">metadata_extract.action.msg.success</param>
+                <param name="failureMessage">metadata_extract.action.msg.failure</param>
+                <evaluator>MimeTypeEvaluatorExtractMetadata</evaluator>
+            </action>
+        </actions>
+        <actionGroups>
+            <actionGroup id="document-browse">
+                <action index="400" id="es_artisca_translate" />
+            </actionGroup>
+            <actionGroup id="document-details">
+                <action index="400" id="es_artisca_translate" />
+            </actionGroup>
+            <actionGroup id="document-browse">
+                <action index="400" id="es_artisca_metadata_extract" />
+            </actionGroup>
+            <actionGroup id="document-details">
+                <action index="400" id="es_artisca_metadata_extract" />
+            </actionGroup>
+        </actionGroups>
+    </config>
+
+    <config evaluator="string-compare" condition="translate-action">
+        <forms>
+            <form>
+                <field-visibility>
+                    <show id="input_lang"/>
+                    <show id="output_lang"/>
+                    <show id="formatting"/>
+                </field-visibility>
+                <appearance>
+                    <field id="input_lang" label-id="translate.action.form.field.input_lang">
+                        <control template="/org/alfresco/components/form/controls/selectone.ftl">
+                            <control-param name="options">
+                                ar|Árabe,
+                                bn|Bengalí,
+                                de|Alemán,
+                                en|Inglés,
+                                es|Español,
+                                es-MX|Español (México),
+                                fr|Francés,
+                                fr-CA|Francés (Canadá),
+                                hi|Hindi,
+                                ja|Japonés,
+                                pt|Portugués (Brasil),
+                                pt-PT|Portugués (Portugal),
+                                ru|Ruso,
+                                zh|Chino (Simplificado),
+                                zh-TW|Chino (Tradicional)
+                            </control-param>
+                        </control>
+                    </field>
+                    <field id="output_lang" label-id="translate.action.form.field.output_lang">
+                        <control template="/org/alfresco/components/form/controls/selectone.ftl">
+                            <control-param name="options">
+                                ar|Árabe,
+                                bn|Bengalí,
+                                de|Alemán,
+                                en|Inglés,
+                                es|Español,
+                                es-MX|Español (México),
+                                fr|Francés,
+                                fr-CA|Francés (Canadá),
+                                hi|Hindi,
+                                ja|Japonés,
+                                pt|Portugués (Brasil),
+                                pt-PT|Portugués (Portugal),
+                                ru|Ruso,
+                                zh|Chino (Simplificado),
+                                zh-TW|Chino (Tradicional)
+                            </control-param>
+                        </control>
+                    </field>
+                    <field id="formatting" label-id="translate.action.form.field.formatting">
+                        <control template="/org/alfresco/components/form/controls/checkbox.ftl" />
+                    </field>
+                </appearance>
+            </form>
+        </forms>
+    </config>
+
+    <config evaluator="string-compare" condition="metadata_extract-action">
+        <forms>
+            <form>
+                <field-visibility>
+                    <show id="type_document"/>
+                </field-visibility>
+                <appearance>
+                    <field id="type_document" label-id="metadata_extract.action.form.field.type_document">
+                        <control template="/org/alfresco/components/form/controls/selectone.ftl">
+                            <control-param name="options">Ticket,Factura</control-param>
+                        </control>
+                    </field>
+                </appearance>
+            </form>
+        </forms>
+    </config>
+
+
+</alfresco-config>
