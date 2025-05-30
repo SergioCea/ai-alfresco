@@ -8,6 +8,7 @@ import es.sergio.pdf.TextLine;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.io.IOException;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -26,6 +27,8 @@ import org.alfresco.service.cmr.dictionary.InvalidTypeException;
 import org.alfresco.service.cmr.model.FileExistsException;
 import org.alfresco.service.cmr.model.FileInfo;
 import org.alfresco.service.cmr.repository.NodeRef;
+import org.alfresco.service.namespace.NamespaceService;
+import org.alfresco.service.namespace.QName;
 import org.alfresco.service.cmr.repository.ContentReader;
 import org.alfresco.service.cmr.repository.ContentWriter;
 import org.alfresco.service.cmr.repository.DuplicateChildNodeNameException;
@@ -95,6 +98,29 @@ public class TranslateService extends ActionExecuterAbstractBase {
             FileInfo uploadNodeRef = null;
             try {
                 uploadNodeRef = this.serviceRegistry.getFileFolderService().create(parentRef, translatedDocumentame, ContentModel.PROP_CONTENT);
+
+                // Copiar aspectos y sus propiedades del documento original al traducido
+                List<QName> originalAspects = new ArrayList<>(serviceRegistry.getNodeService().getAspects(actionedUponNodeRef));
+                for (QName aspect : originalAspects) {
+                    if (!aspect.getNamespaceURI().contains(NamespaceService.ALFRESCO_URI)) {
+                        // Obtener las propiedades del aspecto en el nodo original
+                        Map<QName, Serializable> aspectProps = serviceRegistry.getNodeService().getProperties(actionedUponNodeRef);
+                        Map<QName, Serializable> filteredProps = new java.util.HashMap<>();
+                        for (Map.Entry<QName, Serializable> entry : aspectProps.entrySet()) {
+                            // Solo copiar las propiedades que pertenecen a este aspecto
+                            if (entry.getKey().getNamespaceURI().equals(aspect.getNamespaceURI())) {
+                                filteredProps.put(entry.getKey(), entry.getValue());
+                            }
+                        }
+                        logger.debug("Adding aspect: " + aspect + " with properties: " + filteredProps);
+                        try {
+                            serviceRegistry.getNodeService().addAspect(uploadNodeRef.getNodeRef(), aspect, filteredProps);
+                        } catch (Exception e) {
+                            logger.error("Error al agregar el aspecto: " + aspect + " al nodo: " + uploadNodeRef.getNodeRef());
+                            throw new AlfrescoRuntimeException("Error al agregar el aspecto: " + aspect + " al nodo: " + uploadNodeRef.getNodeRef(), e);
+                        }
+                    }
+                }
             } catch (FileExistsException e) {
                 logger.error("Error al subir el documento. El documento ya existe.");
                 throw new DuplicateChildNodeNameException(parentRef, ContentModel.PROP_CONTENT, translatedDocumentame, e);

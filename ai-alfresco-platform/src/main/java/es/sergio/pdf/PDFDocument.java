@@ -122,34 +122,25 @@ public class PDFDocument {
 
         for (TextLine cline : lines) {
             String clinetext = cline.text;
-
             String clinetextOriginal = cline.originalText;
 
-            FontInfo fontInfo = calculateFontSize(clinetextOriginal, (float) cline.width * width,
-                    (float) cline.height * height, font);
-            // config to include original document structure - overlay with original
-            contentStream.setNonStrokingColor(Color.WHITE);
-            contentStream.addRect((float) cline.left * width,
-                    (float) (height - height * cline.top - fontInfo.textHeight), (float) cline.width * width,
-                    (float) cline.height * height);
-            contentStream.fill();
-
-            fontInfo = calculateFontSize(clinetext, (float) cline.width * width, (float) cline.height * height, font);
-            // config to include original document structure - overlay with translated
-            contentStream.setNonStrokingColor(Color.WHITE);
-            contentStream.addRect((float) cline.left * width,
-                    (float) (height - height * cline.top - fontInfo.textHeight), (float) cline.width * width,
-                    (float) cline.height * height);
-            contentStream.fill();
-            // change the output text color here
-            fontInfo = calculateFontSize(
+            FontInfo fontInfo = calculateFontSize(
                     clinetext.length() <= clinetextOriginal.length() ? clinetextOriginal : clinetext,
                     (float) cline.width * width, (float) cline.height * height, font);
+
+            float x = (float) cline.left * width;
+            float y = (float) (height - height * cline.top - fontInfo.textHeight + 2); // Prueba con +2 o -2
+
+            // Fondo blanco
+            contentStream.setNonStrokingColor(Color.WHITE);
+            contentStream.addRect(x, y, (float) cline.width * width, (float) cline.height * height);
+            contentStream.fill();
+
+            // Texto negro
             contentStream.setNonStrokingColor(Color.BLACK);
             contentStream.beginText();
             contentStream.setFont(font, fontInfo.fontSize);
-            contentStream.newLineAtOffset((float) cline.left * width,
-                    (float) (height - height * cline.top - fontInfo.textHeight));
+            contentStream.newLineAtOffset(x, y);
             contentStream.showText(clinetext);
             contentStream.endText();
         }
