@@ -45,6 +45,20 @@
         </property>
     </bean>
 
+    <bean id="recording-action" class="es.sergio.main.RecordingService" parent="action-executer">
+        <property name="serviceRegistry">
+            <ref bean="ServiceRegistry" />
+        </property>
+
+        <property name="textractService">
+            <ref bean="textractService" />
+        </property>
+
+        <property name="pollyService">
+            <ref bean="pollyService" />
+        </property>
+    </bean>
+
     <bean id="translateService" class="es.sergio.aws.Translate">
         <constructor-arg value="${aws.translate.key}" />
         <constructor-arg value="${aws.translate.secret}" />
@@ -53,5 +67,10 @@
     <bean id="textractService" class="es.sergio.aws.Textract">
         <constructor-arg value="${aws.textract.key}" />
         <constructor-arg value="${aws.textract.secret}" />
+    </bean>
+
+    <bean id="pollyService" class="es.sergio.aws.Polly">
+        <constructor-arg value="${aws.key}" />
+        <constructor-arg value="${aws.secret}" />
     </bean>
 </beans>

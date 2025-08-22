@@ -18,33 +18,33 @@
                 <aspect name="ai:tickets" />
                 <aspect name="ai:invoices" />
             </visible>
-            <addable> <!-- defaults to visible config -->
+            <addable>                <!-- defaults to visible config -->
             </addable>
-            <removeable> <!-- defaults to visible config -->
+            <removeable>                <!-- defaults to visible config -->
             </removeable>
         </aspects>
     </config>
 
     <!-- Ticket AI - Document Library Configuration -->
-	<config evaluator="aspect" condition="ai:tickets">
-		<forms>
-			<form>
-				<field-visibility>
+    <config evaluator="aspect" condition="ai:tickets">
+        <forms>
+            <form>
+                <field-visibility>
                     <show id="ai:ticketDate" for-mode="view"/>
                     <show id="ai:ticketTax" for-mode="view"/>
                     <show id="ai:ticketTotal" for-mode="view"/>
-                    <show id="ai:ticketCountry" for-mode="view"/>				
-				</field-visibility>
-				<appearance>
-					<set id="documentos" appearance="bordered-panel" label="Ticket Metadata" />
-					
+                    <show id="ai:ticketCountry" for-mode="view"/>
+                </field-visibility>
+                <appearance>
+                    <set id="documentos" appearance="bordered-panel" label="Ticket Metadata" />
+
                     <field id="ai:ticketDate" set="documentos">
                         <control template="/org/alfresco/components/form/controls/date.ftl">
                             <control-param name="showTime">false</control-param>
-							<control-param name="submitTime">false</control-param>
+                            <control-param name="submitTime">false</control-param>
                         </control>
                     </field>
-               		<field id="ai:ticketTax" set="documentos">
+                    <field id="ai:ticketTax" set="documentos">
                         <control template="/org/alfresco/components/form/controls/textfield.ftl"></control>
                     </field>
                     <field id="ai:ticketTotal" set="documentos">
@@ -53,39 +53,39 @@
                     <field id="ai:ticketCountry" set="documentos">
                         <control template="/org/alfresco/components/form/controls/textfield.ftl"></control>
                     </field>
-				</appearance>
-			</form>
-		</forms>
-	</config>
-   	
-	<!-- Ticket AI - Advanced Search Configuration -->	
-	<config evaluator="string-compare" condition="AdvancedSearch">
-		<advanced-search>
-			<forms>
-				<form label="Ticket Metadata" description="Busqueda metadatos Ticket" id="customsearchtc">cm:content</form>
-			</forms>
-		</advanced-search>
-	</config>
-	<config evaluator="model-type" condition="cm:content">
-		<forms>
-			<form id="customsearchtc">
-				<field-visibility>	
-					<show id="ai:ticketDate" force="true"/>
-					<show id="ai:ticketTax" force="true"/>
+                </appearance>
+            </form>
+        </forms>
+    </config>
+
+    <!-- Ticket AI - Advanced Search Configuration -->
+    <config evaluator="string-compare" condition="AdvancedSearch">
+        <advanced-search>
+            <forms>
+                <form label="Ticket Metadata" description="Busqueda metadatos Ticket" id="customsearchtc">cm:content</form>
+            </forms>
+        </advanced-search>
+    </config>
+    <config evaluator="model-type" condition="cm:content">
+        <forms>
+            <form id="customsearchtc">
+                <field-visibility>
+                    <show id="ai:ticketDate" force="true"/>
+                    <show id="ai:ticketTax" force="true"/>
                     <show id="ai:ticketTotal" force="true"/>
                     <show id="ai:ticketCountry" force="true"/>
 
-				</field-visibility>
-				<appearance>
-				    <set id="documentos" appearance="bordered-panel" label="Ticket Metadata" />
+                </field-visibility>
+                <appearance>
+                    <set id="documentos" appearance="bordered-panel" label="Ticket Metadata" />
 
                     <field id="ai:ticketDate" set="documentos">
                         <control template="/org/alfresco/components/form/controls/date.ftl">
                             <control-param name="showTime">false</control-param>
-							<control-param name="submitTime">false</control-param>
+                            <control-param name="submitTime">false</control-param>
                         </control>
                     </field>
-					<field id="ai:ticketTax" set="documentos">
+                    <field id="ai:ticketTax" set="documentos">
                         <control template="/org/alfresco/components/form/controls/textfield.ftl"></control>
                     </field>
                     <field id="ai:ticketTotal" set="documentos">
@@ -94,28 +94,28 @@
                     <field id="ai:ticketCountry" set="documentos">
                         <control template="/org/alfresco/components/form/controls/textfield.ftl"></control>
                     </field>
-				</appearance>
-			</form>
-		</forms>
-	</config>
+                </appearance>
+            </form>
+        </forms>
+    </config>
 
     <!-- Invoice AI - Document Library Configuration -->
-	<config evaluator="aspect" condition="ai:invoices">
-		<forms>
-			<form>
-				<field-visibility>
+    <config evaluator="aspect" condition="ai:invoices">
+        <forms>
+            <form>
+                <field-visibility>
                     <show id="ai:invoiceDate" for-mode="view"/>
                     <show id="ai:invoiceNumber" for-mode="view"/>
                     <show id="ai:invoiceTotal" for-mode="view"/>
-                    <show id="ai:invoiceTax" for-mode="view"/>				
-				</field-visibility>
-				<appearance>
-					<set id="documentos" appearance="bordered-panel" label="Invoice Metadata" />
-					
-               		<field id="ai:invoiceDate" set="documentos">
+                    <show id="ai:invoiceTax" for-mode="view"/>
+                </field-visibility>
+                <appearance>
+                    <set id="documentos" appearance="bordered-panel" label="Invoice Metadata" />
+
+                    <field id="ai:invoiceDate" set="documentos">
                         <control template="/org/alfresco/components/form/controls/date.ftl">
                             <control-param name="showTime">false</control-param>
-							<control-param name="submitTime">false</control-param>
+                            <control-param name="submitTime">false</control-param>
                         </control>
                     </field>
                     <field id="ai:invoiceNumber" set="documentos">
@@ -127,33 +127,33 @@
                     <field id="ai:invoiceTax" set="documentos">
                         <control template="/org/alfresco/components/form/controls/textfield.ftl"></control>
                     </field>
-				</appearance>
-			</form>
-		</forms>
-	</config>
-   	
-	<!-- Invoice AI - Advanced Search Configuration -->	
-	<config evaluator="string-compare" condition="AdvancedSearch">
-		<advanced-search>
-			<forms>
-				<form label="Invoice Metadata" description="Busqueda metadatos Invoice" id="customsearchinvoice">cm:content</form>
-			</forms>
-		</advanced-search>
-	</config>
-	<config evaluator="model-type" condition="cm:content">
-		<forms>
-			<form id="customsearchinvoice">
-				<field-visibility>	
-					<show id="ai:invoiceDate" force="true"/>
+                </appearance>
+            </form>
+        </forms>
+    </config>
+
+    <!-- Invoice AI - Advanced Search Configuration -->
+    <config evaluator="string-compare" condition="AdvancedSearch">
+        <advanced-search>
+            <forms>
+                <form label="Invoice Metadata" description="Busqueda metadatos Invoice" id="customsearchinvoice">cm:content</form>
+            </forms>
+        </advanced-search>
+    </config>
+    <config evaluator="model-type" condition="cm:content">
+        <forms>
+            <form id="customsearchinvoice">
+                <field-visibility>
+                    <show id="ai:invoiceDate" force="true"/>
                     <show id="ai:invoiceNumber" force="true"/>
                     <show id="ai:invoiceTotal" force="true"/>
                     <show id="ai:invoiceTax" force="true"/>
 
-				</field-visibility>
-				<appearance>
-				    <set id="documentos" appearance="bordered-panel" label="Invoice Metadata" />
+                </field-visibility>
+                <appearance>
+                    <set id="documentos" appearance="bordered-panel" label="Invoice Metadata" />
 
-					<field id="ai:invoiceDate" set="documentos">
+                    <field id="ai:invoiceDate" set="documentos">
                         <control template="/org/alfresco/components/form/controls/datetime.ftl"></control>
                     </field>
                     <field id="ai:invoiceNumber" set="documentos">
@@ -165,10 +165,10 @@
                     <field id="ai:invoiceTax" set="documentos">
                         <control template="/org/alfresco/components/form/controls/textfield.ftl"></control>
                     </field>
-				</appearance>
-			</form>
-		</forms>
-	</config>
+                </appearance>
+            </form>
+        </forms>
+    </config>
 
     <config evaluator="string-compare" condition="DocLibActions">
         <actions>
@@ -192,6 +192,13 @@
                 <param name="failureMessage">metadata_extract.action.msg.failure</param>
                 <evaluator>MimeTypeEvaluatorExtractMetadata</evaluator>
             </action>
+            <action id="es_artisca_recording" type="javascript" label="recording.action.label" description="recording.action.description" icon="recording-icon">
+                <param name="function">onActionSimpleRepoAction</param>
+                <param name="action">recording-action</param>
+                <param name="successMessage">recording.action.msg.success</param>
+                <param name="failureMessage">recording.action.msg.failure</param>
+                <evaluator>mimeTypeEvaluator</evaluator>
+            </action>
         </actions>
         <actionGroups>
             <actionGroup id="document-browse">
@@ -205,6 +212,12 @@
             </actionGroup>
             <actionGroup id="document-details">
                 <action index="400" id="es_artisca_metadata_extract" />
+            </actionGroup>
+            <actionGroup id="document-browse">
+                <action index="400" id="es_artisca_recording" />
+            </actionGroup>
+            <actionGroup id="document-details">
+                <action index="400" id="es_artisca_recording" />
             </actionGroup>
         </actionGroups>
     </config>

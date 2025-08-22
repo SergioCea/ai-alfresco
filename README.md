@@ -11,9 +11,9 @@ This project integrates **Alfresco Content Services** with artificial intelligen
 
 ## Main Features
 
-- **Metadata extraction** from invoices and tickets using AWS Textract.
-- **Automatic translation** of PDF documents via AWS Translate.
-- **Storage and management** of enriched documents in Alfresco.
+- **Metadata extraction** from invoices and tickets using Amazon Textract.
+- **Translation** of documents via Amazon Translate (PDF, Word, TXT).
+- **Recording text** of documents via Amazon Polly (PDF, Word, TXT).
 - **Docker-based architecture** for easy deployment and testing.
 
 ## Project Structure
@@ -26,8 +26,8 @@ This project integrates **Alfresco Content Services** with artificial intelligen
 ## Requirements
 
 - Docker and Docker Compose
-- AWS account and credentials with permissions for Textract and Translate
-- Java 11+ (for development)
+- AWS account and credentials with permissions for Textract, Translate, Polly
+- Java 17+ (for development)
 
 ## Quick Setup
 
@@ -46,6 +46,8 @@ This project integrates **Alfresco Content Services** with artificial intelligen
    -Daws.translate.secret=YOUR_AWS_SECRET
    -Daws.textract.key=YOUR_AWS_KEY
    -Daws.textract.secret=YOUR_AWS_SECRET
+   -Daws.key=YOUR_AWS_KEY
+   -Daws.secret=YOUR_AWS_SECRET
    ```
 
 3. **Start the environment with Docker Compose:**
@@ -56,13 +58,14 @@ This project integrates **Alfresco Content Services** with artificial intelligen
 
 4. **Access Alfresco and Share:**
    - Alfresco ACS: [http://localhost:8080/alfresco](http://localhost:8080/alfresco)
-   - Alfresco Share: [http://localhost:8081/share](http://localhost:8081/share)
+   - Alfresco Share: [http://localhost:8081/share](http://localhost:8180/share)
 
 ## Usage
 
-1. **Upload a PDF document** to Alfresco.
-2. The system will automatically extract metadata (such as country, date, tax, total) and store them as node properties.
-3. If the document is a PDF, it can be automatically translated and the translated version saved in the repository.
+1. **Upload a document** to Alfresco.
+2. In the document actions you will have the options to translate, extract metadata or save the content.
+3. In the case of translation, you will need to select the input and output languages.
+   When extracting metadata, you must select whether it is a ticket or an invoice.
 
 ## Data Model Customization
 

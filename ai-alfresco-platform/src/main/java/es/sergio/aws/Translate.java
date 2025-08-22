@@ -13,12 +13,8 @@ import software.amazon.awssdk.services.translate.model.TranslateTextResponse;
 
 import java.io.InputStream;
 
-import org.apache.commons.logging.LogFactory;
-import org.apache.commons.logging.Log;
-
 public class Translate {
-        private static final Log logger = LogFactory.getLog(Translate.class);
-        public final TranslateClient translateClient;
+        private final TranslateClient translateClient;
 
         public Translate(String awsKey, String awsSecret) {
                 AwsBasicCredentials awsCredentials = AwsBasicCredentials.create(awsKey, awsSecret);
@@ -53,7 +49,6 @@ public class Translate {
                 TranslateDocumentResponse result = this.translateClient.translateDocument(request);
                 return result.translatedDocument().content().asInputStream();
         }
-
 
         /**
          * Translate a text from a source language to a target language.

@@ -48,7 +48,7 @@ public class MetadataExtractService extends ActionExecuterAbstractBase {
 
     @Override
     protected void executeImpl(Action action, NodeRef actionedUponNodeRef) {
-        if (serviceRegistry.getNodeService().exists(actionedUponNodeRef) == true) {
+        if (serviceRegistry.getNodeService().exists(actionedUponNodeRef)) {
             String typeDoc = (String) action.getParameterValue(PARAM_TYPE_DOCUMENT);
             logger.info("Processing document type: " + typeDoc);
 
@@ -151,7 +151,7 @@ public class MetadataExtractService extends ActionExecuterAbstractBase {
         if (contentReader == null) {
             logger.error("Content reader was null [filename=" + documentFilename + "][docNodeRef=" + documentRef + "]");
 
-            return null;
+            return new byte[0];
         }
 
         // Get the document content bytes
@@ -169,7 +169,7 @@ public class MetadataExtractService extends ActionExecuterAbstractBase {
         } catch (IOException ioe) {
             logger.error("Content could not be read: " + ioe.getMessage() +
                     " [filename=" + documentFilename + "][docNodeRef=" + documentRef + "]");
-            return null;
+            return new byte[0];
         } finally {
             if (is != null) {
                 try {
