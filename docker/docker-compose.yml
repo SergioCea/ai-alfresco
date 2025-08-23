@@ -25,10 +25,8 @@ services:
         -Dlocal.transform.service.enabled=true
         -DlocalTransform.core-aio.url=http://ai-alfresco-transform-core-aio:8090/
         -Dmessaging.broker.url="failover:(nio://ai-alfresco-activemq:61616)?timeout=3000&jms.useCompression=true"
-        -Daws.translate.key=
-        -Daws.translate.secret=
-        -Daws.textract.key=
-        -Daws.textract.secret=
+        -Daws.key=
+        -Daws.secret=
         '
       CATALINA_OPTS: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0.0.0.0:8888"
     ports:

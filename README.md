@@ -42,10 +42,6 @@ This project integrates **Alfresco Content Services** with artificial intelligen
    AWS keys are passed as environment variables in `docker-compose.yml`:
 
    ```yaml
-   -Daws.translate.key=YOUR_AWS_KEY
-   -Daws.translate.secret=YOUR_AWS_SECRET
-   -Daws.textract.key=YOUR_AWS_KEY
-   -Daws.textract.secret=YOUR_AWS_SECRET
    -Daws.key=YOUR_AWS_KEY
    -Daws.secret=YOUR_AWS_SECRET
    ```
@@ -58,7 +54,7 @@ This project integrates **Alfresco Content Services** with artificial intelligen
 
 4. **Access Alfresco and Share:**
    - Alfresco ACS: [http://localhost:8080/alfresco](http://localhost:8080/alfresco)
-   - Alfresco Share: [http://localhost:8081/share](http://localhost:8180/share)
+   - Alfresco Share: [http://localhost:8180/share](http://localhost:8180/share)
 
 ## Usage
 
