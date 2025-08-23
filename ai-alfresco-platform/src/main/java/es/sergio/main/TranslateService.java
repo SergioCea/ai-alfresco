@@ -84,8 +84,11 @@ public class TranslateService extends ActionExecuterAbstractBase {
 
             writeTranslatedContent(utils, translatedContent);
 
-        } catch (Exception e) {
-            logger.error("Translation failed for document: " + utils.getDocumentName(), e);
+        } catch (IOException e) {
+            logger.error("IO error during translation for document: " + utils.getDocumentName(), e);
+            throw new AlfrescoRuntimeException("Translation failed due to IO error: " + e.getMessage(), e);
+        } catch (RuntimeException e) {
+            logger.error("Runtime error during translation for document: " + utils.getDocumentName(), e);
             throw new AlfrescoRuntimeException("Translation failed: " + e.getMessage(), e);
         }
     }
