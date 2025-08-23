@@ -25,7 +25,7 @@ public class PDFDocument {
         this.font = font;
     }
 
-    private FontInfo calculateFontSize(String text, float bbWidth, float bbHeight, PDFont font) throws IOException {
+    private FontInfo calculateFontSize(String text, float bbWidth, PDFont font) throws IOException {
         int fontSize = 20;
         float textWidth = font.getStringWidth(text) / 1000 * fontSize;
         float textHeight = font.getFontDescriptor().getFontBoundingBox().getHeight() / 1000 * fontSize;
@@ -52,7 +52,7 @@ public class PDFDocument {
         return fi;
     }
 
-    public void addPageWithoutFormatting(BufferedImage image, ImageType imageType, List<TextLine> lines)
+    public void addPageWithoutFormatting(BufferedImage image, List<TextLine> lines)
             throws IOException {
         try {
             float width = image.getWidth();
@@ -68,13 +68,11 @@ public class PDFDocument {
 
             for (TextLine cline : lines) {
                 String clinetext = cline.text;
-                // clinetext = removeNonWinAnsiCharactersAndFixNonAsciiSingle(clinetext);
                 String clinetextOriginal = cline.originalText;
-                // clinetextOriginal =
-                // removeNonWinAnsiCharactersAndFixNonAsciiSingle(clinetextOriginal);
                 FontInfo fontInfo = calculateFontSize(
                         clinetext.length() <= clinetextOriginal.length() ? clinetextOriginal : clinetext,
-                        (float) cline.width * width, (float) cline.height * height, font);
+                        (float) cline.width * width, font);
+
                 // config for no images
                 contentStream.setNonStrokingColor(Color.BLACK);
                 contentStream.beginText();
@@ -126,7 +124,7 @@ public class PDFDocument {
 
             FontInfo fontInfo = calculateFontSize(
                     clinetext.length() <= clinetextOriginal.length() ? clinetextOriginal : clinetext,
-                    (float) cline.width * width, (float) cline.height * height, font);
+                    (float) cline.width * width, font);
 
             float x = (float) cline.left * width;
             float y = (float) (height - height * cline.top - fontInfo.textHeight + 2); // Prueba con +2 o -2
