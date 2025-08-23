@@ -8,8 +8,12 @@ import es.sergio.utils.Utils.ActionType;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Optional;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
@@ -73,10 +77,32 @@ public class MetadataExtractService extends ActionExecuterAbstractBase {
 
     private Map<QName, Serializable> extractProperties(AnalyzeExpenseResponse response, String typeDoc) {
         Map<QName, Serializable> properties = new HashMap<>();
+        List<ExpenseField> allFields = new ArrayList<>();
 
         response.expenseDocuments()
-                .forEach(doc -> doc.summaryFields().forEach(field -> processField(field, typeDoc, properties)));
+                .forEach(doc -> allFields.addAll(doc.summaryFields()));
 
+        // Pool de hilos con número de núcleos disponibles
+        ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+        List<Future<Void>> futures = new ArrayList<>();
+
+        for (ExpenseField field : allFields) {
+            futures.add(executor.submit(() -> {
+                processField(field, typeDoc, properties);
+                return null;
+            }));
+        }
+
+        // Esperar a que terminen todos los hilos
+        for (Future<Void> f : futures) {
+            try {
+                f.get();
+            } catch (Exception e) {
+                logger.error("Error procesando campo con hilos", e);
+            }
+        }
+
+        executor.shutdown();
         return properties;
     }
 
@@ -119,9 +145,7 @@ public class MetadataExtractService extends ActionExecuterAbstractBase {
                         .ifPresent(date -> properties.put(AiAlfrescoModel.METADATA_INVOICE_DATE, date));
                 break;
             case "TAX":
-                if (!properties.containsKey(AiAlfrescoModel.METADATA_INVOICE_TAX)) {
-                    properties.put(AiAlfrescoModel.METADATA_INVOICE_TAX, value);
-                }
+                properties.putIfAbsent(AiAlfrescoModel.METADATA_INVOICE_TAX, value);
                 break;
             case "TOTAL":
                 properties.put(AiAlfrescoModel.METADATA_INVOICE_TOTAL, value);

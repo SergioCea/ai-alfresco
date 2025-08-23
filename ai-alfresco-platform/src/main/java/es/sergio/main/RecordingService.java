@@ -8,6 +8,9 @@ import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.awt.image.BufferedImage;
 
 import org.alfresco.model.ContentModel;
@@ -21,6 +24,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.rendering.PDFRenderer;
+import org.apache.pdfbox.text.PDFTextStripper;
 import org.apache.pdfbox.tools.imageio.ImageIOUtil;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
@@ -95,23 +99,51 @@ public class RecordingService extends ActionExecuterAbstractBase {
     }
 
     private String extractTextFromPdf(byte[] pdfData) throws IOException {
-        StringBuilder fullText = new StringBuilder();
-
         try (PDDocument document = PDDocument.load(new ByteArrayInputStream(pdfData))) {
+            PDFTextStripper textStripper = new PDFTextStripper();
+            String text = textStripper.getText(document).trim();
+            
+            if (!text.isEmpty()) {
+                return text;
+            }
+
             PDFRenderer renderer = new PDFRenderer(document);
-
-            for (int page = 0; page < document.getNumberOfPages(); page++) {
-                BufferedImage image = renderer.renderImage(page, 1, org.apache.pdfbox.rendering.ImageType.RGB);
-
-                try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-                    ImageIOUtil.writeImage(image, "jpeg", baos);
-                    ByteBuffer imageBytes = ByteBuffer.wrap(baos.toByteArray());
-                    fullText.append(extractTextFromImage(imageBytes)).append("\n");
+            int totalPages = document.getNumberOfPages();
+            
+            ExecutorService executor = Executors.newFixedThreadPool(
+                    Math.min(totalPages, Runtime.getRuntime().availableProcessors()));
+            try {
+                List<Future<String>> futures = new ArrayList<>();
+                for (int page = 0; page < totalPages; page++) {
+                    final int pageIndex = page;
+                    futures.add(executor.submit(() -> {
+                        try {
+                            BufferedImage image = renderer.renderImage(pageIndex, 1, 
+                                org.apache.pdfbox.rendering.ImageType.RGB);
+                            try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+                                ImageIOUtil.writeImage(image, "jpeg", baos);
+                                return extractTextFromImage(ByteBuffer.wrap(baos.toByteArray()));
+                            }
+                        } catch (IOException e) {
+                            logger.error("Error processing page " + pageIndex, e);
+                            return "";
+                        }
+                    }));
                 }
+
+                StringBuilder result = new StringBuilder();
+                for (Future<String> future : futures) {
+                    try {
+                        result.append(future.get()).append("\n");
+                    } catch (Exception e) {
+                        logger.error("Error getting thread result", e);
+                    }
+                }
+                return result.toString();
+            } finally {
+                executor.shutdown();
             }
         }
-
-        return fullText.toString();
     }
 
     private String extractTextFromWord(byte[] wordData) throws IOException {

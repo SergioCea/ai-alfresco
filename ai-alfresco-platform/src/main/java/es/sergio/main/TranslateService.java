@@ -10,6 +10,9 @@ import es.sergio.utils.Utils.ActionType;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -49,6 +52,30 @@ public class TranslateService extends ActionExecuterAbstractBase {
     public static final String PARAM_INPUT_LANG = "input_lang";
     public static final String PARAM_OUTPUT_LANG = "output_lang";
     public static final String PARAM_FORMATTING = "formatting";
+
+    private static class PageResult {
+        private final int pageIndex;
+        private final BufferedImage image;
+        private final List<TextLine> translatedLines;
+
+        public PageResult(int pageIndex, BufferedImage image, List<TextLine> translatedLines) {
+            this.pageIndex = pageIndex;
+            this.image = image;
+            this.translatedLines = translatedLines;
+        }
+
+        public int getPageIndex() {
+            return pageIndex;
+        }
+
+        public BufferedImage getImage() {
+            return image;
+        }
+
+        public List<TextLine> getTranslatedLines() {
+            return translatedLines;
+        }
+    }
 
     public void setServiceRegistry(ServiceRegistry serviceRegistry) {
         this.serviceRegistry = serviceRegistry;
@@ -102,16 +129,44 @@ public class TranslateService extends ActionExecuterAbstractBase {
 
             PDFDocument pdfDocument = new PDFDocument(PDType1Font.HELVETICA);
             PDFRenderer renderer = new PDFRenderer(inputDocument);
+            int totalPages = inputDocument.getNumberOfPages();
 
-            for (int page = 0; page < inputDocument.getNumberOfPages(); page++) {
-                BufferedImage image = renderer.renderImage(page, 1, org.apache.pdfbox.rendering.ImageType.RGB);
+            ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+            List<Future<PageResult>> futures = new ArrayList<>();
+
+            // Renderizar páginas secuencialmente, pero procesar OCR y traducción en
+            // paralelo
+            for (int page = 0; page < totalPages; page++) {
+                final int pageIndex = page;
+                BufferedImage image = renderer.renderImage(pageIndex, 1, org.apache.pdfbox.rendering.ImageType.RGB);
                 ByteBuffer imageBytes = renderImageToBytes(image);
-                List<TextLine> translatedLines = extractTextAndTranslate(imageBytes, inputLang, outputLang);
+
+                futures.add(executor.submit(() -> {
+                    List<TextLine> translatedLines = extractTextAndTranslate(imageBytes, inputLang, outputLang);
+                    return new PageResult(pageIndex, image, translatedLines);
+                }));
+            }
+
+            PageResult[] pageResults = new PageResult[totalPages];
+            for (Future<PageResult> f : futures) {
+                try {
+                    PageResult result = f.get();
+                    pageResults[result.getPageIndex()] = result;
+                } catch (Exception e) {
+                    logger.error("Error procesando página", e);
+                }
+            }
+
+            executor.shutdown();
+
+            for (PageResult result : pageResults) {
+                if (result.getImage() == null)
+                    continue;
 
                 if (withFormatting) {
-                    pdfDocument.addPageWithFormatting(image, ImageType.JPEG, translatedLines);
+                    pdfDocument.addPageWithFormatting(result.getImage(), ImageType.JPEG, result.getTranslatedLines());
                 } else {
-                    pdfDocument.addPageWithoutFormatting(image, translatedLines);
+                    pdfDocument.addPageWithoutFormatting(result.getImage(), result.getTranslatedLines());
                 }
             }
 
